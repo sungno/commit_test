@@ -1,0 +1,385 @@
+
+{% load static %}
+
+{% block scripts %}
+
+    <script>
+      function addAlbum() {
+        alert('Adding...');
+      }
+    </script>
+    <link rel="stylesheet" href="{% static 'css/chart.css' %}">
+    <script src="{% static 'js/Chart.min.js' %}"></script>
+    <script src="{% static 'js/utils.js' %}"></script>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script>
+        function checkInput(sel,item){
+            if($(sel).val().trim().length == 0){
+                alert(item + ' 입력하세요');
+                $(sel).focus();
+                return false;
+            }
+            return true;
+        }
+        $(document).ready(function(){
+            var maxField = 5; //최대 개수
+            var wrapper = $('.append');
+            var extcnt = 1; // 최초 카운트 1
+            $('.add_btn').click(function(){
+                if(extcnt < maxField){
+                    extcnt++; // 숫자 증가
+                    var fieldHTML = '<div><input type="text" name="ext'+extcnt+'" value="" class="input" id="add_input'+extcnt+'"/><a href="#" class="remove_btn"  style=" ">삭제</a></div>';
+                    $('.append').append(fieldHTML); // Add field
+                    $('#extcount').html("" + extcnt + "개");
+                    $('input[name="extcnt"]').val(extcnt);
+                } else {
+                    alert('5개까지만 추가할 수 있습니다.');
+                    return;
+                }
+            });
+            $(wrapper).on('click', '.remove_btn', function(e){
+                e.preventDefault();
+                $(this).parent('div').remove(); // Remove field
+                extcnt--; // 카운트 감소
+                $('#extcount').html("" + extcnt + "개");
+                $('input[name="extcnt"]').val(extcnt);
+            });
+
+            $('#submit').click(function(){
+                var product =$('input[name="product"]');
+                if(product.val().trim().length == 0){
+                    alert('제목을 입력하세요');
+                    product.focus();
+                    return false;
+                }
+
+                var extcnt = $("input[name='extcnt']").val();// 동적 필드 생성개수 구함
+                // 동적 입력 항목 입력 여부 체크
+                var i;
+                for(i=1; i <= extcnt;i++){
+                    var sel ='input[name="ext'+i+'"]';
+                    var item= '내용'+i;
+                    if(checkInput(sel,item)==false){
+                        return false;
+                    }
+                };
+                form.submit();
+            });
+
+        });
+</script>
+<style>
+
+</style>
+{% endblock %}
+
+{% block body %}
+
+
+
+
+    <main id="main" onload="submit()">
+
+    <!-- ======= Breadcrumbs ======= -->
+    <section id="breadcrumbs" class="breadcrumbs">
+      <div class="container">
+
+        <div class="d-flex justify-content-between align-items-center">
+          <h1>키워드 랭킹 시각화</h1>
+          <a href="/rank_page">HOME</a>
+        </div>
+        <form action="/chart_bar2" method="get" name="submitForm">
+            <div class="form_box">
+                <div class="keyword_cnt_div">
+                    <div class="keyword_cnt">키워드 총갯수</div>
+                    <div id="extcount" class="extcount">1개</div>
+                </div>
+                <div class="product_div">
+                    <div class="product_name">제품명</div>
+                    <input type="text" name="product" value="" class="input" />
+                </div>
+
+                <div class="keyword_div">
+                    <div class="keyword_name">키워드</div>
+                    <input type="text" name="ext1" value="" class="input" />
+                    <a href="#" class="add_btn" >추가</a>
+                    <div class="append"></div>
+                </div>
+                <button type="submit" id="submit" class="submit_btn">입력</button>
+
+            </div>
+<!--            <div class="append"></div>-->
+
+<!--            <button type="submit" id="submit" class="button">입력</button>-->
+
+<!--                <table class="table table-bordered">-->
+<!--                    <tr>-->
+<!--                        <td class="td1">키워드 총갯수</td>-->
+<!--                        <td><p id="extcount" style="color: #ff0000;font: 15px verdana,dotum;">1개</p></td>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <td class="td1">제품명</td>-->
+<!--                        <td><input type="text" name="product" value="" class="input" /></td>-->
+
+<!--                    <tr>-->
+<!--                        <td class="td1">키워드</td>-->
+<!--                        <td>-->
+<!--                            <input type="text" name="ext1" value="" class="input" />-->
+<!--                            <a href="#" class="add_btn" style="text-decoration: none; color:red;">추가</a>-->
+<!--                            <div class="append"></div>-->
+
+
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr>-->
+<!--                        <td colspan='2' align='center'>-->
+<!--                            <button type="submit" id="submit" class="button">입력</button>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </table>-->
+        </form>
+        <script type="text/javascript">
+            $(document).ready (function () {
+                $('.btnAdd').click (function () {
+                    $('.addInput').append (
+                        '<input type="text" name="input_keyword" placeholder="검색어(키워드) 입력">\
+                        <button type="button" class="btnRemove">tag삭제하기</button><br>'
+                    );    // input taf 추가
+                    $('.btnRemove').on('click', function () {
+                                                                                  // 여기서 this는 '.btnRemove'
+                        $(this).prev().remove();        // .prev()로 input tag를 가리키고 remove()한다.
+                        $(this).next().remove();        // <br> 삭제
+                        $(this).remove();                        // 버튼삭제
+                    });
+                });
+            });
+        </script>
+
+      </div>
+    </section><!-- End Breadcrumbs -->
+
+    <!-- ======= Portfolio Section ======= -->
+    <section id="portfolio" class="portfolio">
+      <div class="container">
+
+        <div class="section-title" data-aos="fade-up">
+<!--          <h2>Chart </h2>-->
+<!--          <select name="pets" id="pet-select">-->
+<!--            <option value="">상품 선택</option>-->
+<!--            <option value="product_distinct">{{product_distinct.0.0}}</option>-->
+<!--            <option value="product_distinct">{{product_distinct.1.0}}</option>-->
+
+<!--        </select>-->
+        </div>
+
+
+          <div class="row" data-aos="fade-up" data-aos-delay="200">
+
+            <div id="container" style="width: 50%;">
+                <canvas id="canvas"></canvas>
+            </div>
+            <div id="container" style="width: 75%;">
+                <canvas id="canvas2"></canvas>
+            </div>
+          </div>
+          <div class="row" data-aos="fade-up" data-aos-delay="200">
+            <button id="randomizeData">Randomize Data</button>
+            <button id="addDataset">Add Dataset</button>
+            <button id="removeDataset">Remove Dataset</button>
+            <button id="addData">Add Data</button>
+            <button id="removeData">Remove Data</button>
+
+          </div>
+
+        </div>
+
+      </div>
+    </section><!-- End Portfolio Section -->
+
+    </main><!-- End #main -->
+
+
+
+	<script>
+
+		var color = Chart.helpers.color;
+		var barChartData = {
+			 labels: [{% for i in date_distinct %}'{{ i.0 }}',{% endfor %}], // 점검시간(date)
+
+
+             datasets: [
+               {
+                label:'{{ ext1.1.1 }}',
+                backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+                borderColor: window.chartColors.red,
+                borderWidth: 1,
+                data: [
+                    {% for i in ext1 %}'{{ i.0 }}',{% endfor %},] <!-- 장뇌삼가격  -->
+                },{
+               label:'{{ ext2.1.1 }}',
+                backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+				borderColor: window.chartColors.blue,
+                borderWidth: 1,
+                data: [
+                    {% for i in ext2 %}'{{ i.0 }}',{% endfor %},] <!-- 장뇌삼가격  -->
+                },{
+                label:'{{ ext3.1.1 }}',
+                backgroundColor: color(window.chartColors.green).alpha(0.5).rgbString(),
+				borderColor: window.chartColors.green,
+                borderWidth: 1,
+                data: [
+                    {% for i in ext3 %}'{{ i.0 }}',{% endfor %},] <!-- 장뇌삼가격  -->
+                },
+             ]
+
+
+		};
+        console.log('{{ ext1 }}')
+
+
+		var barChartData2 = {
+			labels: [{% for i in date_distinct2 %}'{{ i.0 }}',{% endfor %}], // 점검시간(date_
+			datasets: [{
+			    label: '{{ keyword_distinct.0.0 }}',
+				backgroundColor: color(window.chartColors.blue).alpha(0.5).rgbString(),
+				borderColor: window.chartColors.blue,
+				borderWidth: 1,
+				data: [{% for i in graph_keyword4 %}'{{ i.1 }}',{% endfor %}]
+			},{
+			    label: '{{ keyword_distinct.1.0 }}',
+				backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+				borderColor: window.chartColors.blue,
+				borderWidth: 1,
+				data: [{% for i in graph_keyword5 %}'{{ i.1 }}',{% endfor %}]
+			},{
+			    label: '{{ keyword_distinct.2.0 }}',
+				backgroundColor: color(window.chartColors.yellow).alpha(0.5).rgbString(),
+				borderColor: window.chartColors.blue,
+				borderWidth: 1,
+				data: [{% for i in graph_keyword6 %}'{{ i.1 }}',{% endfor %}]
+			}
+			    ]
+
+		};
+
+
+		window.onload = function() {
+			var ctx = document.getElementById('canvas').getContext('2d');
+			window.myBar = new Chart(ctx, {
+				type: 'line',
+				data: barChartData,
+				options: {
+					responsive: true,
+					legend: {
+						position: 'top',
+					},
+					title: {
+						display: true,
+						text: '{{ product_distinct.0.0 }}'
+					}
+				}
+			});
+
+			var ctx2 = document.getElementById('canvas2').getContext('2d');
+			window.myBar = new Chart(ctx2, {
+				type: 'line',
+				data: barChartData2,
+				options: {
+					responsive: true,
+					legend: {
+						position: 'top',
+					},
+					title: {
+						display: true,
+						text: '{{ product_distinct.0.1 }}'
+					}
+				}
+			});
+
+
+		};
+
+		document.getElementById('randomizeData').addEventListener('click', function() {
+			var zero = Math.random() < 0.2 ? true : false;
+			barChartData.datasets.forEach(function(dataset) {
+				dataset.data = dataset.data.map(function() {
+					return zero ? 0.0 : randomScalingFactor();
+				});
+
+			});
+			window.myBar.update();
+		});
+
+		var colorNames = Object.keys(window.chartColors);
+
+
+
+            document.getElementById('addDataset').addEventListener('click', function() {
+
+                var colorName = colorNames[barChartData.datasets.length % colorNames.length];
+                var dsColor = window.chartColors[colorName];
+                var newDataset = {
+                    label:'Dataset ' + (barChartData.datasets.length + 1),
+<!--                    label:'{{ keyword_distinct.1.0 }}', &lt;!&ndash; 산양삼 &ndash;&gt;-->
+                    backgroundColor: color(dsColor).alpha(0.5).rgbString(),
+                    borderColor: dsColor,
+                    borderWidth: 1,
+                    data: []
+                };
+
+                for (var index = 0; index < barChartData.labels.length; ++index) {
+                    newDataset.data.push({% for i in graph_keyword2 %}'{{ i.1 }}',{% endfor %});
+                }
+
+<!--                document.write('{{keyword_distinct}}');-->
+                barChartData.datasets.push(newDataset);
+                window.myBar.update();
+
+            });
+
+
+
+
+
+
+		document.getElementById('addData').addEventListener('click', function() {
+			if (barChartData.datasets.length > 0) {
+				var month = MONTHS[barChartData.labels.length % MONTHS.length];
+				barChartData.labels.push(month);
+
+				for (var index = 0; index < barChartData.datasets.length; ++index) {
+					// window.myBar.addData(randomScalingFactor(), index);
+					barChartData.datasets[index].data.push(randomScalingFactor());
+				}
+
+				window.myBar.update();
+			}
+		});
+
+		document.getElementById('removeDataset').addEventListener('click', function() {
+			barChartData.datasets.pop();
+			window.myBar.update();
+		});
+
+		document.getElementById('removeData').addEventListener('click', function() {
+			barChartData.labels.splice(-1, 1); // remove the label first
+
+			barChartData.datasets.forEach(function(dataset) {
+				dataset.data.pop();
+			});
+
+			window.myBar.update();
+		});
+	</script>
+    <script type="text/javascript">
+        function search(){
+            var tb = document.getElementById("tbox");
+            alert(tb.value);
+        }
+    </script>
+    <script>
+        $("#submit_button").click(function() {
+            alert($("input[name=input_keyword]").length);
+         });
+    </script>
+{% endblock %}

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+<link rel="stylesheet" type="text/css" href="write.css" />
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+function checkInput(sel,item){
+    if($(sel).val().trim().length == 0){
+        alert(item + ' 입력하세요');
+        $(sel).focus();
+        return false;
+    }
+    return true;
+}
+$(document).ready(function(){
+    var maxField = 5; //최대 개수
+    var wrapper = $('.append');
+    var extcnt = 1; // 최초 카운트 1
+    $('.add_btn').click(function(){
+        if(extcnt < maxField){
+            extcnt++; // 숫자 증가
+            var fieldHTML = '<div><input type="text" name="ext'+extcnt+'" value="" class="input" /><a href="#" class="remove_btn"><img src="./img/remove-icon.png"/></a></div>';
+            $('.append').append(fieldHTML); // Add field
+            $('#extcount').html("(" + extcnt + "개)");
+            $('input[name="extcnt"]').val(extcnt);
+        } else {
+            alert('5개까지만 추가할 수 있습니다.');
+            return;
+        }
+    });
+    $(wrapper).on('click', '.remove_btn', function(e){
+        e.preventDefault();
+        $(this).parent('div').remove(); // Remove field
+        extcnt--; // 카운트 감소
+        $('#extcount').html("(" + extcnt + "개)");
+        $('input[name="extcnt"]').val(extcnt);
+    });
+
+    $('#submit').click(function(){
+        var subject =$('input[name="subject"]');
+        if(subject.val().trim().length == 0){
+            alert('제목을 입력하세요');
+            subject.focus();
+            return false;
+        }
+
+        var extcnt = $("input[name='extcnt']").val();// 동적 필드 생성개수 구함
+        // 동적 입력 항목 입력 여부 체크
+        var i;
+        for(i=1; i <= extcnt;i++){
+            var sel ='input[name="ext'+i+'"]';
+            var item= '내용'+i;
+            if(checkInput(sel,item)==false){
+                return false;
+            }
+        };
+        form.submit();
+    });
+
+});
+</script>
+</head>
+<body>
+
+<form name="writeForm" method='get'>
+    <input type="hidden" name="extcnt" value="1">
+    <table class="table table-bordered">
+        <tr>
+            <td class="td1">제목</td>
+            <td><input type="text" name="subject" value="aa" class="input" /></td>
+        </tr>
+        <tr>
+            <td class="td1">내용</td>
+            <td>
+                <input type="text" name="ext1" value="bb" class="input" />
+                <span id="extcount" style="color: #ff0000;font: 10px verdana,dotum;">(1개)</span>
+                <a href="#" class="add_btn"><img src="./img/add-icon.png"/></a>
+                <div class="append"></div>
+            </td>
+        </tr>
+        <tr>
+            <td colspan='2' align='center'>
+                <button type="submit" id="submit" class="button">생성</button>
+            </td>
+        </tr>
+    </table>
+</form>
+
+</body>
+</html>

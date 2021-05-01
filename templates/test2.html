@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+
+</head>
+<body>
+    <form action="" method='POST'>
+    <div class='addInput'>
+
+    </div>
+
+    <button type='button' class="btnAdd">tag추가하기</button>
+    <input type="submit" id="my_button">
+
+    </form>
+    <script type="text/javascript">
+        $(document).ready (function () {
+            $('.btnAdd').click (function () {
+
+                $('.addInput').append (
+                    '<input type="type" name="test" value="">\
+                    <button type="button" class="btnRemove">tag삭제하기</button><br>'
+                );    // input taf 추가
+                $('.btnRemove').on('click', function () {
+                                                                              // 여기서 this는 '.btnRemove'
+                    $(this).prev().remove();        // .prev()로 input tag를 가리키고 remove()한다.
+                    $(this).next().remove();        // <br> 삭제
+                    $(this).remove();                        // 버튼삭제
+                })
+
+            });
+        });
+        $("#my_button").click(function() {
+            alert($("input[name=test]").length);
+         });
+    </script>
+</body>
+</html>
